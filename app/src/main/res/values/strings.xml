@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">WeatherForecaster</string>
+
+    <string name="hello_world">HOWS THE WEATHER?</string>
+    <string name="action_settings">Settings</string>
+    <string name="exit_button">EXIT</string>
+</resources>
