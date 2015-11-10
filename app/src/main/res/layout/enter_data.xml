@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".EnterData">
+<RelativeLayout
+    android:layout_height="fill_parent"
+    android:layout_width="fill_parent">
+    <TextView
+        android:id="@+id/title_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_data_title"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/Maroon"
+        android:textSize="16dp"
+        />
+
+    <TextView
+        android:id="@+id/address_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_address_text"
+        android:layout_below="@id/title_text"
+    />
+
+    <EditText
+        android:id="@+id/address"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPostalAddress"
+        android:layout_below="@id/address_text"
+    />
+
+
+    <TextView
+        android:id="@+id/city_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_city_text"
+        android:layout_below="@id/address"
+        />
+
+    <EditText
+        android:id="@+id/city"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPostalAddress"
+        android:layout_below="@id/city_text"
+        />
+
+    <TextView
+        android:id="@+id/state_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_state_text"
+        android:layout_below="@id/city"
+        />
+
+    <EditText
+        android:id="@+id/state"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPostalAddress"
+        android:layout_below="@id/state_text"
+        />
+
+    <TextView
+        android:id="@+id/zip_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_zip_text"
+        android:layout_below="@id/state"
+        />
+
+    <EditText
+        android:id="@+id/zip_code"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPostalAddress"
+        android:layout_below="@id/zip_text"
+        />
+
+    <Button
+        android:id="@+id/enter_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="ENTER"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/zip_code"
+        style="@style/btnStyleGenoa"/>
+
+    <Button
+        android:id="@+id/exit_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="EXIT"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/enter_button"
+        style="@style/btnStyleOrange"/>
+
+
+</RelativeLayout>
+</ScrollView>

@@ -37,4 +37,20 @@ public class SharedPreferenceManager {
         editor.putString("address", add);
         editor.commit();
     }
+
+    public String getDestinationZipCode() {return settings.getString("destination_zip_code", null);}
+
+    public void setDestinationZipCode(String zip) {
+        editor.putString("destination_zip_code", zip);
+        editor.commit();
+
+    }
+
+    public String getCurrentZipCode() {return settings.getString("current_zip_code", null);}
+
+    public void setCurrentZipCode(String zip) {
+        editor.putString("current_zip_code", zip);
+        editor.commit();
+
+    }
 }

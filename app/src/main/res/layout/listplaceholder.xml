@@ -1,7 +1,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">	
+    android:layout_height="fill_parent">
+
+    <TextView
+        android:id="@+id/results_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:text="@string/results_title"
+        android:textColor="@color/DarkSlateBlue"
+        android:textSize="18dp"
+        />
 
     <ListView
 	 	android:id="@id/android:list"
@@ -14,15 +25,15 @@
         android:id="@id/android:empty"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="No data"/>
-    
-
+        android:text="No Data Available"/>
 
      <Button
-			android:id="@+id/exit_button"
-    		android:text="@string/exit_button"
-    		android:layout_width="wrap_content"
-    		android:layout_height="wrap_content"
+		android:id="@+id/exit_button"
+    	android:text="@string/exit_button"
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        style="@style/btnStyleShakespeare"
     		/>   
     
 </LinearLayout>

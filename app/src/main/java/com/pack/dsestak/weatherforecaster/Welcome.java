@@ -1,8 +1,13 @@
 package com.pack.dsestak.weatherforecaster;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.location.LocationListener;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.app.AlertDialog;
@@ -15,19 +20,31 @@ import android.provider.Settings;
 import android.widget.TextView;
 import android.content.SharedPreferences;
 
-public class Welcome extends Activity {
+public class Welcome extends Activity  {
 
-    Button weatherButton;
+    Button weatherButton, travelButton, destinationButton;
     TextView myAddress;
 
     private double latitude;
     private double longitude;
     private String locationAddress;
+    private String currentZip;
     private String oldAddress;
     LocationService locationService;
     SharedPreferenceManager sharedPrefMgr;
 
+    protected LocationManager locationManager;
     Location gpsLocation;
+    boolean isGPSEnabled = false;
+    boolean isNetworkEnabled = false;
+    private Context mContext = Welcome.this;
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,16 +55,23 @@ public class Welcome extends Activity {
         sharedPrefMgr = new SharedPreferenceManager(this);
         oldAddress = sharedPrefMgr.getAddress();
 
-
-
         locationService = new LocationService(Welcome.this);
+        locationManager = (LocationManager) mContext
+                .getSystemService(LOCATION_SERVICE);
+
+        // getting GPS status
+        isGPSEnabled = locationManager
+                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        // getting network status
+        isNetworkEnabled = locationManager
+                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
 
         setupViews();
         addButtonListeners();
-        getLocation();
+    //    getLocation();
         getAddress();
-
-
 
     }
 
@@ -68,18 +92,41 @@ public class Welcome extends Activity {
             }
 
 
-    //use seperate thread to get GEOCODE location
+
+
+    //use separate thread to get GEOCODE location
     public void getAddress() {
 
-                if (gpsLocation != null) {
-                    latitude = gpsLocation.getLatitude();
-                    longitude = gpsLocation.getLongitude();
-                    GeoCoderHelper locationAddress = new GeoCoderHelper();
-                    locationAddress.getAddressFromLocation(latitude, longitude,
-                            getApplicationContext(), new GeoHandler());
-                } else {
-                    showSettingsAlert();
-                }
+        gpsLocation = locationService
+                .getLocation(LocationManager.GPS_PROVIDER);
+
+        //check if both are enabled prior to getting location & Geocode
+        if (isGPSEnabled && isNetworkAvailable()) {
+           if (gpsLocation != null) {
+
+               latitude = gpsLocation.getLatitude();
+               longitude = gpsLocation.getLongitude();
+
+               String result = "Latitude: " + gpsLocation.getLatitude() +
+                       " Longitude: " + gpsLocation.getLongitude();
+
+               System.out.println("gps results = " + result);
+
+
+               GeoCoderHelper locationAddress = new GeoCoderHelper();
+               locationAddress.getAddressFromLocation(latitude, longitude,
+                       getApplicationContext(), new GeoHandler());
+           }
+        } else if (!isGPSEnabled) {
+
+               showSettingsAlert();
+
+        } else if (isNetworkAvailable()) {
+
+               showNetworkAlert();
+
+        }
+
 
             }
 
@@ -106,6 +153,29 @@ public class Welcome extends Activity {
         alertDialog.show();
     }
 
+    //show alert dialog to remind user to turn on Wi-fi or check connection
+    public void showNetworkAlert() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                Welcome.this);
+        alertDialog.setTitle("SETTINGS");
+        alertDialog.setMessage("You Must Enable Wi-fi or have a Data Connection!");
+        alertDialog.setPositiveButton("Settings",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(
+                                Settings.ACTION_WIFI_SETTINGS);
+                        Welcome.this.startActivity(intent);
+                    }
+                });
+        alertDialog.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        alertDialog.show();
+    }
+
     private class GeoHandler extends Handler {
         @Override
         public void handleMessage(Message message) {
@@ -113,7 +183,9 @@ public class Welcome extends Activity {
             switch (message.what) {
                 case 1:
                     Bundle bundle = message.getData();
+                    System.out.println("bundle =" + bundle);
                     locationAddress = bundle.getString("address");
+                    currentZip = bundle.getString("zip_code");
                     break;
                 default:
                     locationAddress = null;
@@ -125,9 +197,11 @@ public class Welcome extends Activity {
     }
 
     private void setupViews() {
-
+        travelButton = (Button) findViewById(R.id.travel_button);
         weatherButton = (Button) findViewById(R.id.weather_button);
+        destinationButton = (Button) findViewById(R.id.enter_info_button);
         myAddress = (TextView) findViewById(R.id.address);
+
 
         //set old address unless we can get a new one
         if (oldAddress != null) {
@@ -157,6 +231,37 @@ public class Welcome extends Activity {
         );
 
 
+        travelButton.setOnClickListener (
+                new View.OnClickListener() {
+
+                    @Override public void onClick(View v) {
+                        Intent i = new Intent(Welcome.this, Travel.class);
+                        i.putExtra("Lat", latitude);
+                        i.putExtra("Long", longitude);
+                        i.putExtra("Addr", locationAddress);
+                        i.putExtra("zip", currentZip);
+
+                        startActivity(i);
+                        Welcome.this.finish();
+
+                    }
+                }
+        );
+
+        destinationButton.setOnClickListener(
+                new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(Welcome.this, EnterData.class);
+
+                        startActivity(i);
+                        Welcome.this.finish();
+
+                    }
+                }
+        );
+
     }
 
 //shutdown if back button is pressed
@@ -166,5 +271,8 @@ public class Welcome extends Activity {
         Welcome.this.finish();
         return;
     }
+
+
+
 
 }

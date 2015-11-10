@@ -28,21 +28,25 @@ public class GeoCoderHelper {
             public void run() {
                 Geocoder geocoder = new Geocoder(context, Locale.getDefault());
                 String result = null;
+                String zipResult = null;
 
                 try {
                     List<Address> addressList = geocoder.getFromLocation(
                             latitude, longitude, 1);
                     if (addressList != null && addressList.size() > 0) {
                         Address address = addressList.get(0);
-                        StringBuilder sb = new StringBuilder();
+                        StringBuilder sb1 = new StringBuilder();
                         for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-                            sb.append(address.getAddressLine(i)).append("\n");
+                            sb1.append(address.getAddressLine(i)).append("\n");
                         }
-                        sb.append(address.getLocality()).append("\n");
-                        sb.append(address.getPostalCode()).append("\n");
-                        sb.append(address.getCountryName());
-                        result = sb.toString();
-                    }
+                        sb1.append(address.getLocality()).append("\n");
+                        sb1.append(address.getPostalCode()).append("\n");
+                        sb1.append(address.getCountryName());
+                        result = sb1.toString();
+
+                        StringBuilder sb2 = new StringBuilder();
+                        sb2.append(address.getPostalCode());
+                        zipResult = sb2.toString();                    }
                 } catch (IOException e) {
                     Log.e(TAG, "Unable connect to Geocoder", e);
                 } finally {
@@ -54,8 +58,9 @@ public class GeoCoderHelper {
                         //create bundle & add data
                         Bundle bundle = new Bundle();
                         result = "Latitude: " + latitude + " Longitude: " + longitude +
-                                "\n\nAddress:\n" + result;
+                                "\nAddress:\n" + result;
                         bundle.putString("address", result);
+                        bundle.putString("zip_code", zipResult);
                         message.setData(bundle);
                     //if no results
                     } else {
@@ -63,7 +68,10 @@ public class GeoCoderHelper {
                         Bundle bundle = new Bundle();
                         result = "Latitude: " + latitude + " Longitude: " + longitude +
                                 "\n Unable to get address for this lat-long.";
+                        zipResult = "unable to get zip code for this lat-long";
                         bundle.putString("address", result);
+                        bundle.putString("zip_code", zipResult);
+
                         message.setData(bundle);
                     }
                     message.sendToTarget();

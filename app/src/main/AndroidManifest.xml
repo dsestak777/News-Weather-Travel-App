@@ -16,15 +16,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="Weather"></activity>
+        <activity android:name="Weather"></activity>
+        <activity android:name="Travel"></activity>
+        <activity android:name="EnterData"></activity>
 
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
 
 
 </manifest>
