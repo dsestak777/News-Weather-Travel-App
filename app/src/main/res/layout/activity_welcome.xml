@@ -35,7 +35,7 @@
         android:id="@+id/weather_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="GET MY WEATHER!!"
+        android:text="@string/get_weather_button"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
@@ -46,7 +46,7 @@
         android:id="@+id/travel_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="GET TRAVEL INFO!!"
+        android:text="@string/get_travel_button"
         android:layout_marginTop="20dp"
         android:layout_centerVertical="true"
         android:layout_below="@id/weather_button"
@@ -54,15 +54,26 @@
         style="@style/btnStyleShakespeare"/>
 
     <Button
-        android:id="@+id/enter_info_button"
+        android:id="@+id/news_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="ENTER YOUR DESTINATION"
+        android:text="@string/get_news_button"
         android:layout_marginTop="20dp"
         android:layout_centerVertical="true"
         android:layout_below="@id/travel_button"
         android:layout_centerHorizontal="true"
         style="@style/btnStyleSandrift"/>
+
+    <Button
+        android:id="@+id/enter_info_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_destination_button"
+        android:layout_marginTop="20dp"
+        android:layout_centerVertical="true"
+        android:layout_below="@id/news_button"
+        android:layout_centerHorizontal="true"
+        style="@style/btnStyleOrange"/>
 
 
 </RelativeLayout>

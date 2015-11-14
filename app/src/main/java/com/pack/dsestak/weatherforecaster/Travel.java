@@ -84,6 +84,7 @@ public class Travel extends ListActivity {
 
     SharedPreferenceManager sharedPrefMgr;
 
+    //create boolean to check if network is available
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -99,8 +100,6 @@ public class Travel extends ListActivity {
 
         //get shared prefs
         sharedPrefMgr = new SharedPreferenceManager(this);
-        //oldWeather = sharedPrefMgr.getWeather();
-        //oldAddress = sharedPrefMgr.getAddress();
         destinationZip = sharedPrefMgr.getDestinationZipCode();
 
 
@@ -118,27 +117,22 @@ public class Travel extends ListActivity {
         setupViews();
         addButtonListeners();
 
-
-
-
+        //if no zip code is stored show alert
         if (destinationZip == null) {
 
             showNoLocationAlert();
 
+        //if network is not available show alert
         } else if(!isNetworkAvailable()) {
 
             showNetworkAlert();
 
         } else {
 
-            //set URL
-            // url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=Vancouver+BC|Seattle&destinations=San+Francisco|Victoria+BC&mode=bicycling&language=fr-FR&key=AIzaSyCE5FLt79Fu_-WTbZfVmEi1USc6O-E151s";
-
-           // url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=22204&destinations=22209&mode=driving&language=en-EN&units=imperial&key=AIzaSyCE5FLt79Fu_-WTbZfVmEi1USc6O-E151s";
+            //set URL to get data from Google
             url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins="+currentZip+"&destinations="+destinationZip+"&mode=driving&language=en-EN&units=imperial&key=AIzaSyCE5FLt79Fu_-WTbZfVmEi1USc6O-E151s";
 
             // get travel data using JSON asynchronously
-
             new GetJSONFromGoogleMaps().execute();
 
         }
@@ -191,6 +185,7 @@ public class Travel extends ListActivity {
         alertDialog.show();
     }
 
+    //setup GUI
     private void setupViews()
     {
 
@@ -200,6 +195,7 @@ public class Travel extends ListActivity {
 
     }
 
+    //add listeners for GUI buttons
     private void addButtonListeners()
     {
         exitButton.setOnClickListener
@@ -241,9 +237,9 @@ public class Travel extends ListActivity {
             //response status
             int status=0;
 
-            //http post
+            //http GET request
             try {
-
+                //create a connection
                 URL u = new URL(url);
                 conn = (HttpURLConnection) u.openConnection();
                 conn.setRequestMethod("GET");
@@ -261,8 +257,6 @@ public class Travel extends ListActivity {
             } catch (Exception e) {
                 Log.e("log_tag", "Error in http connection " + e.toString());
             }
-
-
 
             //convert response to string
             try
@@ -295,9 +289,7 @@ public class Travel extends ListActivity {
                     //if no result use old data
                 } else {
                     System.out.println("GET request Error!");
-                  //  result = oldWeather;
-                  //  address = oldAddress+ " - OLD DATA";
-                  //  System.out.println("old weather=" + oldWeather);
+
                 }
 
             }
@@ -337,8 +329,7 @@ public class Travel extends ListActivity {
 
             if (jArray != null) {
                 try {
-                    //Get Local Weather
-
+                    //Get Travel info from JSON response
                     JSONArray originObject = jArray.getJSONArray("origin_addresses");
                     JSONArray destinationObject = jArray.getJSONArray("destination_addresses");
                     JSONArray rowArray = jArray.getJSONArray("rows");
@@ -385,18 +376,9 @@ public class Travel extends ListActivity {
                     System.out.println("travel distance = " + travelDistance);
 
 
-                  //  for (int i = 0; i < rowArray.length(); i++) {
+
                         //create hashmap to store JSON data
                         HashMap<String, String> map = new HashMap<String, String>();
-
-                        //JSONObject e = currentweather.getJSONObject(0);
-
-                        //	JSONArray winddata = e.getJSONArray("wind");
-                        //	JSONObject wind = winddata.getJSONObject(0);
-
-
-                    //    JSONObject distanceObject = elementArray.getJSONObject("distance");
-                    //    String distance = elementArray.getString(0);
 
 
                         //put data in map

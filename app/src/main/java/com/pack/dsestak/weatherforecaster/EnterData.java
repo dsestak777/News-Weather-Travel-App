@@ -35,7 +35,7 @@ public class EnterData extends Activity {
             addButtonListeners();
     }
 
-
+    //setup GUI
     private  void setupViews () {
 
         myAddress = (EditText) findViewById(R.id.address);
@@ -64,6 +64,7 @@ public class EnterData extends Activity {
         alertDialog.show();
     }
 
+    //add button listeners
     private void addButtonListeners () {
 
         enterButton.setOnClickListener(

@@ -1,45 +1,11 @@
 package com.pack.dsestak.weatherforecaster;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -47,27 +13,29 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
 
 
-
-public class Weather extends ListActivity {
+public class News extends ListActivity {
 	Button exitButton;
 	TextView resultsText;
 
-	private double longitude;
-	private double latitude;
-	private String address;
-	private String oldAddress;
-	private String oldWeather;
-	private String destinationZip;
 	private static String url;
 
 	private JSONObject jArray = null;
@@ -93,61 +61,35 @@ public class Weather extends ListActivity {
 
 		//get shared prefs
 		sharedPrefMgr = new SharedPreferenceManager(this);
-		destinationZip = sharedPrefMgr.getDestinationZipCode();
-
-		//if no zip code is stored show alert
-		if (destinationZip == null) {
-
-			showNoLocationAlert();
 
 		//if network is not available show alert
-		} else if (!isNetworkAvailable()) {
+		if (!isNetworkAvailable()) {
 
 			showNetworkAlert();
 
 		} else {
 
+			//set URL to retrieve news from Yahoo
+			url="https://query.yahooapis.com/v1/public/yql?q=select%20title%20from%20rss%20where%20url%3D%22http%3A%2F%2Frss.news.yahoo.com%2Frss%2Ftopstories%22&format=json&diagnostics=true&callback=";
 
-			url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22" + destinationZip + "%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
-
-			// get weather data using JSON asynchronously
+			// get news data using JSON asynchronously
 			new GetJSONFromYahoo().execute();
 		}
 
 
 		setupViews();
-		resultsText.setText("RESULTS FOR : " + destinationZip);
+		resultsText.setText("WORLD NEWS:");
 		addButtonListeners();
 
 
 	}
 
-	//show alert dialog to remind user to enter a destination location
-	public void showNoLocationAlert() {
-		AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-				Weather.this);
-		alertDialog.setTitle("SETTINGS");
-		alertDialog.setMessage("You Must Enter a Destination First!!");
-		alertDialog.setPositiveButton("Enter Data",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						Intent intent = new Intent(Weather.this, EnterData.class);
-						Weather.this.startActivity(intent);
-					}
-				});
-		alertDialog.setNegativeButton("Cancel",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.cancel();
-					}
-				});
-		alertDialog.show();
-	}
+
 
 	//show alert dialog to remind user to turn on Wi-fi or check connection
 	public void showNetworkAlert() {
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(
-				Weather.this);
+				News.this);
 		alertDialog.setTitle("SETTINGS");
 		alertDialog.setMessage("You Must Enable Wi-fi or have a Data Connection!");
 		alertDialog.setPositiveButton("Settings",
@@ -155,7 +97,7 @@ public class Weather extends ListActivity {
 					public void onClick(DialogInterface dialog, int which) {
 						Intent intent = new Intent(
 								Settings.ACTION_WIFI_SETTINGS);
-						Weather.this.startActivity(intent);
+						News.this.startActivity(intent);
 					}
 				});
 		alertDialog.setNegativeButton("Cancel",
@@ -183,8 +125,8 @@ public class Weather extends ListActivity {
 						new View.OnClickListener() {
 							@Override
 							public void onClick(View v) {
-								startActivity(new Intent(Weather.this, Welcome.class));
-								Weather.this.finish();
+								startActivity(new Intent(News.this, Welcome.class));
+								News.this.finish();
 							}
 						}
 				);
@@ -206,7 +148,7 @@ public class Weather extends ListActivity {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			dialog = new ProgressDialog(Weather.this);
+			dialog = new ProgressDialog(News.this);
 			dialog.setMessage("Getting Data ...");
 			dialog.setIndeterminate(false);
 			dialog.setCancelable(true);
@@ -219,7 +161,7 @@ public class Weather extends ListActivity {
 			//response status
 			int status = 0;
 
-			//http get request
+			//http GET request
 			try {
 				//create a connection
 				URL u = new URL(url);
@@ -271,9 +213,7 @@ public class Weather extends ListActivity {
 					//if no result use old data
 				} else {
 					System.out.println("GET request Error!");
-					result = oldWeather;
-					address = oldAddress + " - OLD DATA";
-					System.out.println("old weather=" + oldWeather);
+
 				}
 
 
@@ -311,35 +251,27 @@ public class Weather extends ListActivity {
 
 			if (jArray != null) {
 				try {
-					//Get Local Weather from JSON response
+					//Get Headline News from JSON response
 					JSONObject queryObject = jArray.getJSONObject("query");
 
-
 					JSONObject results = queryObject.getJSONObject("results");
-					JSONObject channel = results.getJSONObject("channel");
-					JSONObject item = channel.getJSONObject("item");
-					JSONArray forecast = item.getJSONArray("forecast");
+					JSONArray items = results.getJSONArray("item");
 
-
-					for (int i = 0; i < forecast.length(); i++) {
+					for (int i = 0; i < items.length(); i++) {
 						//create hashmap to store JSON data
 						HashMap<String, String> map = new HashMap<String, String>();
 
-
-						JSONObject currentForecast = forecast.getJSONObject(i);
+						JSONObject title = items.getJSONObject(i);
 
 						//put data in map
-						map.put("day", currentForecast.getString("day"));
-						map.put("high", currentForecast.getString("high") + " high");
-						map.put("low", currentForecast.getString("low") + " low");
-						map.put("text", currentForecast.getString("text"));
+						map.put("news", title.getString("title"));
 
 						mylist.add(map);
 
 						//set data into listadapter
-						ListAdapter adapter = new SpecialAdapter(Weather.this, mylist, R.layout.weather,
-								new String[]{"day", "high", "low", "text"},
-								new int[]{R.id.item_title, R.id.item_subtitle, R.id.item_subtitle2, R.id.item_subtitle3});
+						ListAdapter adapter = new SpecialAdapter(News.this, mylist, R.layout.news,
+								new String[]{"news"},
+								new int[]{R.id.item_title});
 
 						setListAdapter(adapter);
 
@@ -354,16 +286,14 @@ public class Weather extends ListActivity {
 
 				HashMap<String, String> map = new HashMap<String, String>();
 				map.put("id", String.valueOf(0));
-				map.put("location", "Location: not available");
-				map.put("temp", "Temperature: not available");
-				map.put("weathertext", "Weather: not available");
-				map.put("windspeed", "Wind Speed: not available");
+				map.put("news", "News: not available");
+
 				mylist.add(map);
 
 				//set data into listadapter
-				ListAdapter adapter = new SimpleAdapter(Weather.this, mylist, R.layout.weather,
-						new String[]{"location", "temp", "weathertext", "windspeed"},
-						new int[]{R.id.item_title, R.id.item_subtitle, R.id.item_subtitle2, R.id.item_subtitle3});
+				ListAdapter adapter = new SimpleAdapter(News.this, mylist, R.layout.news,
+						new String[]{"news"},
+						new int[]{R.id.item_title});
 
 				setListAdapter(adapter);
 			}
@@ -372,6 +302,7 @@ public class Weather extends ListActivity {
 		}
 
 	}
+
 
 
 
@@ -387,7 +318,7 @@ public class Weather extends ListActivity {
 	public void onBackPressed() {
 
 
-		Intent i = new Intent(Weather.this, Welcome.class);
+		Intent i = new Intent(News.this, Welcome.class);
 		startActivity(i);
 	}
 

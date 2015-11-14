@@ -17,4 +17,9 @@
     <string name="results_title">RESULTS:</string>
     <string name="enter_data_title">ENTER YOUR FAVORITE DESTINATION:</string>
 
+    <string name="get_weather_button">GET MY WEATHER!!</string>
+    <string name="get_travel_button">GET TRAVEL INFO!!</string>
+    <string name="get_news_button">GET WORLD NEWS!!</string>
+    <string name="enter_destination_button">ENTER YOUR DESTINATION</string>
+
 </resources>

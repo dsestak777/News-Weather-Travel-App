@@ -16,6 +16,7 @@ public class SpecialAdapter extends SimpleAdapter {
         super(context, items, resource, from, to);
     }
 
+    //override view from SimpleAdapter
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, convertView, parent);

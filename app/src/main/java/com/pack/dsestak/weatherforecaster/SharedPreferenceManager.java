@@ -11,8 +11,6 @@ public class SharedPreferenceManager {
     SharedPreferences settings;
     SharedPreferences.Editor editor;
 
-
-
     public SharedPreferenceManager(Context mContext) {
 
         settings = mContext.getSharedPreferences("my_shared_prefs", 0);
@@ -20,10 +18,7 @@ public class SharedPreferenceManager {
 
     }
 
-
-
-
-
+    //getters & setters for shared preferences
     public String getWeather() {return settings.getString("weather", null);}
 
     public void setWeather(String w) {

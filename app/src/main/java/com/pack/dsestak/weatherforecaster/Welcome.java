@@ -22,7 +22,7 @@ import android.content.SharedPreferences;
 
 public class Welcome extends Activity  {
 
-    Button weatherButton, travelButton, destinationButton;
+    Button weatherButton, travelButton, destinationButton, newsButton;
     TextView myAddress;
 
     private double latitude;
@@ -39,6 +39,7 @@ public class Welcome extends Activity  {
     boolean isNetworkEnabled = false;
     private Context mContext = Welcome.this;
 
+    //create boolean to check if network is available
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -55,6 +56,7 @@ public class Welcome extends Activity  {
         sharedPrefMgr = new SharedPreferenceManager(this);
         oldAddress = sharedPrefMgr.getAddress();
 
+        //get an instance of the location service
         locationService = new LocationService(Welcome.this);
         locationManager = (LocationManager) mContext
                 .getSystemService(LOCATION_SERVICE);
@@ -70,29 +72,9 @@ public class Welcome extends Activity  {
 
         setupViews();
         addButtonListeners();
-    //    getLocation();
         getAddress();
 
     }
-
-    //get our location using location service
-    public void getLocation() {
-                gpsLocation = locationService
-                        .getLocation(LocationManager.GPS_PROVIDER);
-                if (gpsLocation != null) {
-                    latitude = gpsLocation.getLatitude();
-                    longitude = gpsLocation.getLongitude();
-                    String result = "Latitude: " + gpsLocation.getLatitude() +
-                            " Longitude: " + gpsLocation.getLongitude();
-                    myAddress.setText(result);
-                //if GPS is off show alert
-                } else {
-                    showSettingsAlert();
-                }
-            }
-
-
-
 
     //use separate thread to get GEOCODE location
     public void getAddress() {
@@ -117,10 +99,12 @@ public class Welcome extends Activity  {
                locationAddress.getAddressFromLocation(latitude, longitude,
                        getApplicationContext(), new GeoHandler());
            }
+            //if GPS is off show alert
         } else if (!isGPSEnabled) {
 
                showSettingsAlert();
 
+           //if network is not available show alert
         } else if (isNetworkAvailable()) {
 
                showNetworkAlert();
@@ -176,6 +160,7 @@ public class Welcome extends Activity  {
         alertDialog.show();
     }
 
+
     private class GeoHandler extends Handler {
         @Override
         public void handleMessage(Message message) {
@@ -196,10 +181,12 @@ public class Welcome extends Activity  {
         }
     }
 
+    //setup GUI
     private void setupViews() {
         travelButton = (Button) findViewById(R.id.travel_button);
         weatherButton = (Button) findViewById(R.id.weather_button);
         destinationButton = (Button) findViewById(R.id.enter_info_button);
+        newsButton = (Button) findViewById(R.id.news_button);
         myAddress = (TextView) findViewById(R.id.address);
 
 
@@ -213,6 +200,7 @@ public class Welcome extends Activity  {
 
     }
 
+    //add listeners for GUI buttons
     private void addButtonListeners() {
 
         weatherButton.setOnClickListener (
@@ -230,6 +218,21 @@ public class Welcome extends Activity  {
             }
         );
 
+
+        newsButton.setOnClickListener (
+                new View.OnClickListener() {
+
+                    @Override public void onClick(View v) {
+                        Intent i = new Intent(Welcome.this, News.class);
+
+
+
+                        startActivity(i);
+                        Welcome.this.finish();
+
+                    }
+                }
+        );
 
         travelButton.setOnClickListener (
                 new View.OnClickListener() {
