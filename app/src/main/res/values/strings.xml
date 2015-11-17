@@ -9,7 +9,7 @@
     <string name="start_updates">Start updates</string>
     <string name="stop_updates">Stop updates</string>
     <string name="location_updated_message">Location updated</string>
-    <string name="your_address_text"><u>Your Current Location:</u></string>
+    <string name="your_address_text"><u><b>Your Current Location:</b></u></string>
     <string name="enter_address_text">Enter Address:</string>
     <string name="enter_city_text">Enter City:</string>
     <string name="enter_state_text">Enter State:</string>

@@ -57,7 +57,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-
 public class Weather extends ListActivity {
 	Button exitButton;
 	TextView resultsText;
@@ -107,18 +106,15 @@ public class Weather extends ListActivity {
 
 		} else {
 
-
 			url = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22" + destinationZip + "%22)&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
 
 			// get weather data using JSON asynchronously
 			new GetJSONFromYahoo().execute();
 		}
 
-
 		setupViews();
 		resultsText.setText("RESULTS FOR : " + destinationZip);
 		addButtonListeners();
-
 
 	}
 
@@ -173,7 +169,6 @@ public class Weather extends ListActivity {
 		exitButton = (Button) findViewById(R.id.exit_button);
 		resultsText = (TextView) findViewById(R.id.results_title);
 
-
 	}
 
 	//add listeners for GUI buttons
@@ -188,7 +183,6 @@ public class Weather extends ListActivity {
 							}
 						}
 				);
-
 
 	}
 
@@ -239,10 +233,8 @@ public class Weather extends ListActivity {
 				Log.e("log_tag", "Error in http connection " + e.toString());
 			}
 
-
 			//convert response to string
 			try
-
 			{
 
 				if (status == HttpURLConnection.HTTP_OK) { // success
@@ -275,7 +267,6 @@ public class Weather extends ListActivity {
 					address = oldAddress + " - OLD DATA";
 					System.out.println("old weather=" + oldWeather);
 				}
-
 
 			} catch (
 					Exception e
@@ -314,17 +305,14 @@ public class Weather extends ListActivity {
 					//Get Local Weather from JSON response
 					JSONObject queryObject = jArray.getJSONObject("query");
 
-
 					JSONObject results = queryObject.getJSONObject("results");
 					JSONObject channel = results.getJSONObject("channel");
 					JSONObject item = channel.getJSONObject("item");
 					JSONArray forecast = item.getJSONArray("forecast");
 
-
 					for (int i = 0; i < forecast.length(); i++) {
 						//create hashmap to store JSON data
 						HashMap<String, String> map = new HashMap<String, String>();
-
 
 						JSONObject currentForecast = forecast.getJSONObject(i);
 
@@ -368,13 +356,9 @@ public class Weather extends ListActivity {
 				setListAdapter(adapter);
 			}
 
-
 		}
 
 	}
-
-
-
 
 	private static String getResponseText(InputStream inStream) {
 
@@ -385,7 +369,6 @@ public class Weather extends ListActivity {
 	//return to main menu if back button is pressed
 	@Override
 	public void onBackPressed() {
-
 
 		Intent i = new Intent(Weather.this, Welcome.class);
 		startActivity(i);

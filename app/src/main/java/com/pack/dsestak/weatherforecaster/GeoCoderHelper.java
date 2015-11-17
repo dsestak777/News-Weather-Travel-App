@@ -41,9 +41,9 @@ public class GeoCoderHelper {
                         for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
                             sb1.append(address.getAddressLine(i)).append("\n");
                         }
-                        sb1.append(address.getLocality()).append("\n");
-                        sb1.append(address.getPostalCode()).append("\n");
-                        sb1.append(address.getCountryName());
+                      //  sb1.append(address.getLocality()).append("\n");
+                      //  sb1.append(address.getPostalCode()).append("\n");
+                      //  sb1.append(address.getCountryName());
                         result = sb1.toString();
                         //put zip code info into separate string
                         StringBuilder sb2 = new StringBuilder();
